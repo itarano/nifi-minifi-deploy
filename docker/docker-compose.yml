@@ -1,0 +1,36 @@
+version: "3.5"
+services:
+  minifi:
+    hostname: minifi
+    container_name: minifi
+    image: apache/nifi-minifi:0.4.0
+    volumes:
+      - ./volumes/minifi/conf/bootstrap.conf:/opt/minifi/minifi-0.4.0/conf/bootstrap.conf
+      - ./volumes/minifi/conf/templates:/opt/minifi/minifi-0.4.0/conf/templates
+    #ports:
+      #- "8001:8000" # Depurar
+    networks:
+      - logs
+    # entrypoint: /bin/sh
+    # stdin_open: true
+    # tty: true
+  nifi:
+    hostname: nifi
+    container_name: nifi
+    image: apache/nifi:1.9.2
+    ports:
+      - "8080:8080" # Unsecured HTTP Web Port
+      - "8000:8000" # Puerto para Depurar
+    volumes:
+      - ./volumes/nifi/conf:/opt/nifi/nifi-1.9.2/conf
+    networks:
+      - logs
+    # entrypoint: /bin/bash
+    # stdin_open: true
+    # tty: true
+networks:
+  logs:
+    ipam:
+      driver: default
+      config:
+       - subnet: 172.19.0.0/24
