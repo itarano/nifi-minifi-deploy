@@ -1,5 +1,7 @@
 version: "3.5"
+
 services:
+
   minifi:
     hostname: minifi
     container_name: minifi
@@ -20,14 +22,28 @@ services:
     image: apache/nifi:1.9.2
     ports:
       - "8080:8080" # Unsecured HTTP Web Port
-      - "8000:8000" # Puerto para Depurar
+      - "8001:8000" # Puerto para Depurar
     volumes:
       - ./volumes/nifi/conf:/opt/nifi/nifi-1.9.2/conf
     networks:
       - logs
-    # entrypoint: /bin/bash
-    # stdin_open: true
-    # tty: true
+  mongo:
+    hostname: mongo
+    container_name: mongo
+    image: mongo
+    networks: 
+      - logs
+  mongo-ui:
+    hostname: mongo-express
+    container_name: mongo-express
+    image: mongo-express
+    ports: 
+      - 8081:8081
+    environment: 
+      - ME_CONFIG_MONGODB_SERVER=mongo
+    networks: 
+      - logs
+
 networks:
   logs:
     ipam:
